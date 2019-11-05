@@ -1,7 +1,21 @@
 {
   "manifestVersion": "2.2",
-  "contracts": {},
+  "contracts": {
+    "ActionDutchXSell": "ActionDutchXSell",
+    "GelatoCore": "GelatoCore",
+    "ProxyFactory": "ProxyFactory",
+    "ProxyRegistry": "ProxyRegistry",
+    "TriggerTimestampPassed": "TriggerTimestampPassed",
+    "MultiMintForTimeTrigger": "MultiMintForTimeTrigger"
+  },
   "dependencies": {},
   "name": "gelato",
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "compiler": {
+    "manager": "openzeppelin",
+    "solcVersion": "0.5.12",
+    "compilerSettings": {
+      "optimizer": {}
+    }
+  }
 }

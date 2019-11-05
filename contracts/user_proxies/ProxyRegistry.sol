@@ -1,15 +1,21 @@
 pragma solidity ^0.5.10;
 
-import './DSProxy.sol';
+import './Proxy.sol';
+import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
-// This Registry deploys new proxy instances through DSProxyFactory.build(address)
+// This Registry deploys new proxy instances through ProxyFactory.build(address)
 //   and keeps a registry of owner => proxy
-contract ProxyRegistry {
-    mapping(address => DSProxy) public proxies;
-    DSProxyFactory internal factory;
+contract ProxyRegistry is Initializable {
+    mapping(address => Proxy) public proxies;
+    mapping(address => bool) public registeredProxy;
 
-    constructor(address factory_) public {
-        factory = DSProxyFactory(factory_);
+    ProxyFactory internal factory;
+
+    function initialize(address factory_)
+        external
+        initializer
+    {
+        factory = ProxyFactory(factory_);
     }
 
     // deploys a new proxy instance
@@ -21,8 +27,9 @@ contract ProxyRegistry {
     // deploys a new proxy instance
     // sets custom owner of proxy
     function build(address owner) public returns (address payable proxy) {
-        require(proxies[owner] == DSProxy(0) || proxies[owner].owner() != owner); // Not allow new proxy if the user already has one and remains being the owner
+        require(proxies[owner] == Proxy(0) || proxies[owner].owner() != owner); // Not allow new proxy if the user already has one and remains being the owner
         proxy = factory.build(owner);
-        proxies[owner] = DSProxy(proxy);
+        proxies[owner] = Proxy(proxy);
+        registeredProxy[proxy] = true;
     }
 }

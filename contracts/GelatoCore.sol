@@ -1,8 +1,7 @@
 pragma solidity ^0.5.10;
 
 import './interfaces/user_proxies_interfaces/IProxyRegistry.sol';
-import './user_proxies/DappSys/DSProxy.sol';
-import './user_proxies/DappSys/DSGuard.sol';
+import './user_proxies/Proxy.sol';
 import './interfaces/triggers_actions_interfaces/IGelatoAction.sol';
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
@@ -12,100 +11,60 @@ import '@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard
 import '@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol';
 
 /**
- * @title: GelatoUserProxies
  * @dev No need to inherit Initializable or Ownable because of inheritance linearization:
     GelatoCore is first derived from GelatoCoreAccounting, which already sets those up.
- * @notice non-deploy base contract
+ * @dev non-deploy base contract
  */
-contract GelatoUserProxies
+contract GelatoUserProxies is Initializable,
+                              Ownable
+
 {
     /// @notice non-deploy base contract
     constructor() internal {}
 
     IProxyRegistry internal proxyRegistry;
-    DSProxyFactory internal proxyFactory;
-    DSGuardFactory internal guardFactory;
-
-    bytes4 internal proxyExecSelector;
+    ProxyFactory internal proxyFactory;
 
     /**
      * @dev initializer function is like a constructor for upgradeable contracts
-     * @param _proxyRegistry
-     * @param _proxyFactory
-     * @param _guardFactory
+     * @param _proxyRegistry x
+     * @param _proxyFactory y
      * @notice as per OpenZeppelin SDK
      */
     function _initialize(address _proxyRegistry,
-                         address _proxyFactory,
-                         address _guardFactory
+                         address _proxyFactory
     )
         internal
         initializer
     {
         proxyRegistry = IProxyRegistry(_proxyRegistry);
-        proxyFactory = DSProxyFactory(_proxyFactory);
-        guardFactory = DSGuardFactory(_guardFactory);
-        proxyExecSelector = bytes4(keccak256("execute(address,bytes)"));
+        proxyFactory = ProxyFactory(_proxyFactory);
     }
 
     // _____________ Creating Gelato User Proxies n/3 ______________________
     /// @dev requires msg.sender (user) to have no proxy
     modifier userHasNoProxy {
-        require(proxyRegistry.proxies(msg.sender) == DSProxy(0),
+        require(proxyRegistry.proxies(msg.sender) == Proxy(0),
             "GelatoUserProxies: user already has a proxy"
         );
         _;
     }
 
     /**
-     * @dev this function should be called for users that have nothing deployed yet
-     * @return the address of the deployed DSProxy aka userAccount, and its guard
-     * @notice user-EOA-tx that should follow: userProxy.setAuthority(userProxyGuard)
-     * @notice Guard potentially breaks user's dapp interactions with previous dapps
+     * @notice deploys gelato proxy for users that have no proxy yet
+     * @dev This function should be called for users that have nothing deployed yet
+            User-EOA-tx that should follow: userProxy.setAuthority(userProxyGuard).
+     * @return address of the deployed Proxy aka userAccount
      */
     function devirginize()
         external
         userHasNoProxy
-        returns(address userProxy, address userProxyGuardAddress)
+        returns(address userProxy)
     {
         userProxy = proxyRegistry.build(msg.sender);
-        DSGuard userProxyGuard = guardFactory.newGuard();
-        userProxyGuard.permit(address(this), userProxy, bytes32(proxyExecSelector));
-        userProxyGuard.setOwner(msg.sender);  ///@notice changed from address(userProxy)
-        userProxyGuardAddress = address(userProxyGuard);
-        emit LogDevirginize(userProxy, userProxyGuardAddress);
+        emit LogDevirginize(userProxy);
     }
-    event LogDevirginize(address userProxy, address userProxyGuard);
-
-    /**
-     * @dev this function should be called for users that have a proxy but no guard
-     * @return the address of the deployed DSProxy aka userAccount
-     * @notice user-EOA-tx that should follow: userProxy.setAuthority(userProxyGuard)
-     * @notice Guard potentially breaks user's dapp interactions with previous dapps
-     */
-    function guard()
-        external
-        returns(address userProxyGuardAddress)
-    {
-        DSProxy userProxy = proxyRegistry.proxies(msg.sender);
-        require(userProxy != DSProxy(0),
-            "GelatoUserProxies.guard: user has no proxy deployed -> devirginize()"
-        );
-        require(userProxy.authority() == DSAuthority(0),
-            "GelatoUserProxies.guard: user already has a DSAuthority"
-        );
-        DSGuard userProxyGuard = guardFactory.newGuard();
-        userProxyGuard.permit(address(this), address(userProxy), bytes32(proxyExecSelector));
-        userProxyGuard.setOwner(msg.sender);  ///@notice changed from address(userProxy)
-        userProxyGuardAddress = address(userProxyGuard);
-        emit LogGuard(userProxyGuardAddress);
-    }
-    event LogGuard(address userProxyGuard);
-
-    /**
-     * @notice 3rd option: user already has a DSGuard
-     * => permit(gelatoCore, address(userProxy), proxyExecSelector) via frontend
-     */
+    event LogDevirginize(address userProxy);
     // ================
 
     // _____________ State Variable Getters ______________________
@@ -123,26 +82,12 @@ contract GelatoUserProxies
     function getProxyFactoryAddress() external view returns(address) {
         return address(proxyFactory);
     }
-    /**
-     * @dev get the guardFactory's address
-     * @return address of guardFactory
-     */
-    function getGuardFactoryAddress() external view returns(address) {
-        return address(guardFactory);
-    }
-    /**
-     * @dev get the sig param for permit fn on userProxy's DSGuard
-     * @return the userProxy's execute function's selector as bytes32
-     */
-    function getSigForGuard() external view returns(bytes32) {
-        return bytes32(proxyExecSelector);
-    }
     // ================
 
     // _____________ State Variable administration ______________________
     /**
      * @dev GelatoCore owner calls this function to connect Core to new ProxyRegistry
-     * @param _newProxyRegistry
+     * @param _newProxyRegistry x
      */
     function setProxyRegistry(address _newProxyRegistry)
         external
@@ -157,32 +102,17 @@ contract GelatoUserProxies
 
     /**
      * @dev GelatoCore owner calls this function to conect core to new ProxyFactory
-     * @param _newProxyFactory
+     * @param _newProxyFactory x
      */
     function setProxyFactory(address _newProxyFactory)
         external
         onlyOwner
     {
         emit LogSetProxyRegistry(address(proxyFactory), _newProxyFactory);
-        proxyFactory = DSProxyFactory(_newProxyFactory);
+        proxyFactory = ProxyFactory(_newProxyFactory);
     }
     event LogSetProxyFactory(address indexed proxyFactory,
                              address indexed newProxyFactory
-    );
-
-    /**
-     * @dev GelatoCore owner calls this function to connect core to new DSGuard factory
-     * @param _newGuardFactory
-     */
-    function setGuardFactory( address _newGuardFactory)
-        external
-        onlyOwner
-    {
-        emit LogSetGuardFactory(address(guardFactory), _newGuardFactory);
-        guardFactory = DSGuardFactory(_newGuardFactory);
-    }
-    event LogSetGuardFactory(address indexed oldGuardFactory,
-                             address indexed newGuardFactory
     );
     // ================
 }
@@ -222,7 +152,7 @@ contract GelatoCoreAccounting is Initializable,
      * param _gasOutsideGasleftChecks: gas cost to be determined and set by owner
      * param _gasInsideGasleftChecks: gas cost to be determined and set by owner
      * param _canExecMaxGas: gas cost to be determined and set by owner
-     * param _userProxyExecGas: the overhead consumed by the DSProxy execute fn
+     * param _userProxyExecGas: the overhead consumed by the Proxy execute fn
      * @notice as per OpenZeppelin SDK
      */
     function _initialize()
@@ -261,7 +191,7 @@ contract GelatoCoreAccounting is Initializable,
     // _______ APIs for executionClaim pricing ______________________________________
     /**
      * @dev get the minimum execution gas requirement for a particular action
-     * @param _actionGasStipend
+     * @param _actionGasStipend x
      */
     function getMinExecutionGasRequirement(uint256 _actionGasStipend)
         external
@@ -303,7 +233,7 @@ contract GelatoCoreAccounting is Initializable,
     }
     /**
      * @dev get an executor's price
-     * @param _executor
+     * @param _executor x
      * @return uint256 executor's price factor
      */
     function getExecutorPrice(address _executor) external view returns(uint256) {
@@ -311,7 +241,7 @@ contract GelatoCoreAccounting is Initializable,
     }
     /**
      * @dev get an executor's executionClaim lifespan
-     * @param _executor
+     * @param _executor x
      * @return uint256 executor's executionClaim lifespan
      */
     function getExecutorClaimLifespan(address _executor) external view returns(uint256) {
@@ -319,7 +249,7 @@ contract GelatoCoreAccounting is Initializable,
     }
     /**
      * @dev get the gelato-internal wei balance of an executor
-     * @param _executor
+     * @param _executor z
      * @return uint256 wei amount of _executor's gelato-internal deposit
      */
     function getExecutorBalance(address _executor) external view returns(uint256) {
@@ -375,7 +305,7 @@ contract GelatoCoreAccounting is Initializable,
             "GelatoCoreAccounting.registerExecutor: _executorClaimLifespan cannot be 0"
         );
         executorPrice[msg.sender] = _executorPrice;
-        executorClaimLifespan = _executorClaimLifespan;
+        executorClaimLifespan[msg.sender] = _executorClaimLifespan;
         emit LogRegisterExecutor(msg.sender,
                                  _executorPrice,
                                  _executorClaimLifespan
@@ -479,13 +409,13 @@ contract GelatoCoreAccounting is Initializable,
     /**
      * @dev setter for gelatoCore devs to impose a lower boundary on
        executors' listed claim lifespans, to disallow bad claims
-     * @param _newMinExecutionClaimLifespan
+     * @param _newMinExecutionClaimLifespan x
      */
     function setMinExecutionClaimLifespan(uint256 _newMinExecutionClaimLifespan)
         onlyOwner
         external
     {
-        emit LogSetMinExecutionClaimLifespan(minExecutionLifespan,
+        emit LogSetMinExecutionClaimLifespan(minExecutionClaimLifespan,
                                              _newMinExecutionClaimLifespan
         );
         minExecutionClaimLifespan = _newMinExecutionClaimLifespan;
@@ -496,7 +426,7 @@ contract GelatoCoreAccounting is Initializable,
 
     /**
      * @dev setter for GelatoCore devs to configure the protocol's executionGas calculations
-     * @param _newGasOutsideGasleftChecks
+     * @param _newGasOutsideGasleftChecks x
      * @notice important for _getMinExecutionGasRequirement and getMintingDepositPayable
      */
     function setGasOutsideGasleftChecks(uint256 _newGasOutsideGasleftChecks)
@@ -514,7 +444,7 @@ contract GelatoCoreAccounting is Initializable,
 
     /**
      * @dev setter for GelatoCore devs to configure the protocol's executionGas calculations
-     * @param _newGasInsideGasleftChecks
+     * @param _newGasInsideGasleftChecks z
      * @notice important for _getMinExecutionGasRequirement and getMintingDepositPayable
      */
     function setGasInsideGasleftChecks(uint256 _newGasInsideGasleftChecks)
@@ -532,7 +462,7 @@ contract GelatoCoreAccounting is Initializable,
 
     /**
      * @dev setter for GelatoCore devs to configure the protocol's executionGas calculations
-     * @param _newCanExecMaxGas
+     * @param _newCanExecMaxGas z
      * @notice important for _getMinExecutionGasRequirement and getMintingDepositPayable
      */
     function setCanExecMaxGas(uint256 _newCanExecMaxGas)
@@ -546,7 +476,7 @@ contract GelatoCoreAccounting is Initializable,
 
     /**
      * @dev setter for GelatoCore devs to configure the protocol's executionGas calculations
-     * @param _newUserProxyExecGas
+     * @param _newUserProxyExecGas z
      * @notice important for _getMinExecutionGasRequirement and getMintingDepositPayable
      */
     function setUserProxyExecGas(uint256 _newUserProxyExecGas)
@@ -574,19 +504,17 @@ contract GelatoCore is GelatoUserProxies,
 
     /**
      * @dev GelatoCore's initializer function (constructor for upgradeable contracts)
-     * @param _proxyRegistry
-     * @param _guardFactory
+     * @param _proxyRegistry z
      * @notice as per OpenZeppelin SDK - this initializer fn must call the initializers
         of all the base contracts.
      */
     function initialize(address _proxyRegistry,
-                        address _proxyFactory,
-                        address _guardFactory
+                        address _proxyFactory
     )
         public
         initializer
     {
-        GelatoUserProxies._initialize(_proxyRegistry, _proxyFactory, _guardFactory);
+        GelatoUserProxies._initialize(_proxyRegistry, _proxyFactory);
         GelatoCoreAccounting._initialize();
     }
 
@@ -609,7 +537,7 @@ contract GelatoCore is GelatoUserProxies,
     mapping(uint256 => address) private userProxyByExecutionClaimId;
     /**
      * @dev api to read from the userProxyByExecutionClaimId state variable
-     * @param _executionClaimId
+     * @param _executionClaimId z
      * @return address of the userProxy behind _executionClaimId
      */
     function getProxyWithExecutionClaimId(uint256 _executionClaimId)
@@ -624,7 +552,7 @@ contract GelatoCore is GelatoUserProxies,
     mapping(uint256 => bytes32) private hashedExecutionClaims;
     /**
      * @dev interface to read from the hashedExecutionClaims state variable
-     * @param _executionClaimId
+     * @param _executionClaimId z
      * @return the bytes32 hash of the executionClaim with _executionClaimId
      */
     function getHashedExecutionClaim(uint256 _executionClaimId)
@@ -677,28 +605,15 @@ contract GelatoCore is GelatoUserProxies,
         {
             /// @notice check if msg.sender is a user (EOA)
             if (msg.sender == tx.origin) {
-                DSProxy userProxyContract = proxyRegistry.proxies(msg.sender);
-                require(userProxyContract != DSProxy(0),
+                userProxy = address(proxyRegistry.proxies(msg.sender));
+                require(userProxy != address(0),
                     "GelatoCore.mintExecutionClaim: EOA has no registered proxy"
                 );
-                require(userProxyContract.authority == address(this),
-                    "GelatoCore.mintExecutionClaim: EOA has not authorized gelatoCore"
-                );
-                userProxy = address(userProxyContract);
             } else {
-                DSProxyFactory proxyFactory = DSProxyFactory(proxyFactory);
-                require(proxyFactory.isProxy(msg.sender),
-                    "GelatoCore.mintExecutionClaim: msg.sender is not a valid proxy"
+                require(proxyRegistry.registeredProxy(msg.sender),
+                    "GelatoCore.mintExecutionClaim: msg.sender not a registered proxy"
                 );
-                DSProxy userProxyContract = DSProxy(msg.sender);
-                address owner = userProxyContract.owner();
-                userProxy = address(proxyRegistry.proxies(owner));
-                require(userProxy != address(0),
-                    "GelatoCore.mintExecutionClaim: proxy not registered"
-                );
-                require(userProxyContract.authority == address(this),
-                    "GelatoCore.mintExecutionClaim: proxy has gelatoCore unauthorized"
-                );
+                userProxy = msg.sender;
             }
         }
         // =============
@@ -949,7 +864,7 @@ contract GelatoCore is GelatoUserProxies,
 
         // _________  call to userProxy.execute => action  __________________________
         {
-            bytes memory returndata = (DSProxy(_userProxy).execute
+            bytes memory returndata = (Proxy(_userProxy).execute
                                                           .gas(_executeGas)
                                                           (_action, _actionPayload)
             );
@@ -1020,7 +935,7 @@ contract GelatoCore is GelatoUserProxies,
         nonReentrant
     {
         {
-            address userProxyOwner = DSProxy(_userProxy).owner();
+            address userProxyOwner = Proxy(_userProxy).owner();
             if (msg.sender != userProxyOwner) {
                 require(_executionClaimExpiryDate <= now && msg.sender == _selectedExecutor,
                     "GelatoCore.cancelExecutionClaim: only selected executor post expiry"
