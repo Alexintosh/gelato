@@ -6,8 +6,9 @@
   },
   "main": "index.js",
   "scripts": {
-    "mint": "node scripts/minting/proxyMultiMintForTimeTrigger.js",
-    "exec-debug": "export BLOCK=$BLOCK; DEBUG='executornode' && node scripts/executornode.js"
+    "kyber-multimint-ropsten": "node scripts/minting/kyber-ropsten/kyberMultiMintForTimeTrigger.js",
+    "dutchx-multimint-rinkeby": "node scripts/minting/dutchX-rinkeby/dutchXMultiMintForTimeTrigger.js",
+    "exec-rinkeby": "DEBUG='executornode' && node scripts/executornode.js"
   },
   "keywords": [],
   "author": "",
