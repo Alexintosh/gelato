@@ -74,7 +74,7 @@ GNO: 0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c
 WETH: 0xc778417e063141139fce010982780140aa0cd5ab
 
 Actions:
-ActionDutchXSellImplementation: 0x986F7247Be7768B6fB4DA3D35f8e77234E040F34
+ActionDutchXSellImplementation: 0xd41Dcd393262c226736c1aACe1a4DAc571bb20Eb
 
 Triggers:
 
@@ -87,4 +87,4 @@ TriggerTimestampPassedProxy: 0x7A154C838f0FE48944D0a04a125f4D0C80c9360F
 
 Scripts:
 --------
-MultiMintForTimeTriggerImplementation: 0x3582B9F47D9af6640647995BCaa2948B8fdb24e3
+MultiMintForTimeTriggerImplementation: 0x03692e5B7fF7ceF44d34BEA26110d85E5a12b3Db
