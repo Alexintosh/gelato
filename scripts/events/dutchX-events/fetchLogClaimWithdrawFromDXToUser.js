@@ -33,7 +33,7 @@ if (process.env.ROPSTEN) {
   searchFromBlock = process.env.RINKEBY_BLOCK;
 } else {
   console.log(`\n\t\t ❗NO NETWORK DEFINED ❗\n`);
-};
+}
 
 console.log(`\n\t\t Starting from block number: ${searchFromBlock}`);
 if (searchFromBlock === "" || searchFromBlock === undefined) {
@@ -41,56 +41,53 @@ if (searchFromBlock === "" || searchFromBlock === undefined) {
 }
 
 // LogNewExecutionClaimMinted
-const gelatoDutchXInterfaceABI = [
-  "event LogSellOnDutchX(address indexed user, address indexed dutchXSeller, address indexed sellToken, address buyToken, uint256 sellAmount, uint256 dutchXFee, uint256 sellAmountAfterFee, uint256 sellAuctionIndex)"
+const actionWithdrawFromDXToUserABI = [
+  "event LogClaimWithdrawFromDutchXToUser(address indexed user, address indexed sellToken, address indexed buyToken, uint256 auctionIndex, uint256 withdrawAmount)"
 ];
 
-async function fetchLogSellOnDutchX() {
+async function main() {
   // Log Parsing
-  let iface = new ethers.utils.Interface(gelatoDutchXInterfaceABI);
+  let iface = new ethers.utils.Interface(actionWithdrawFromDXToUserABI);
 
-  let topicSellOnDutchX = ethers.utils.id(
-    "LogSellOnDutchX(address,address,address,address,uint256,uint256,uint256,uint256)"
+  let topicWithdrawFromDXToUser = ethers.utils.id(
+    "LogClaimWithdrawFromDutchXToUser(address,address,address,uint256,uint256)"
   );
-  let filterSellOnDutchX = {
+  let filterWithdrawFromDXToUser = {
     address: userProxyAddress,
     fromBlock: parseInt(searchFromBlock),
-    topics: [topicSellOnDutchX]
+    topics: [topicWithdrawFromDXToUser]
   };
   try {
-    const logsSellOnDutchX = await provider.getLogs(filterSellOnDutchX);
-    const sellOnDutchXLogs = logsSellOnDutchX.reduce((acc, log, i) => {
+    const logs = await provider.getLogs(filterWithdrawFromDXToUser);
+    const withdrawFromDXToUserLogs = logs.reduce((acc, log, i) => {
       const parsedLog = iface.parseLog(log);
       if (!acc[i]) {
         acc[i] = [];
       }
       acc[i] = {
         user: parsedLog.values.user,
-        dutchXSeller: parsedLog.values.dutchXSeller,
         sellToken: parsedLog.values.sellToken,
         buyToken: parsedLog.values.buyToken,
-        sellAmount: parsedLog.values.sellAmount,
-        dutchXFee: parsedLog.values.dutchXFee,
-        sellAmountAfterFee: parsedLog.values.sellAmountAfterFee,
-        sellAuctionIndex: parsedLog.values.sellAuctionIndex
+        auctionIndex: parsedLog.values.auctionIndex,
+        withdrawAmount: parsedLog.values.withdrawAmount
       };
       return acc;
     }, []);
     // Log available executionClaims
-    if (Object.keys(sellOnDutchXLogs).length === 0) {
-      console.log("\n\n\t\t LogSellOnDutchX: NONE");
+    if (Object.keys(withdrawFromDXToUserLogs).length === 0) {
+      console.log("\n\n\t\t LogClaimWithdrawFromDutchXToUser: NONE");
     } else {
-      for (let obj of sellOnDutchXLogs) {
+      for (let obj of withdrawFromDXToUserLogs) {
         for (let [key, value] of Object.entries(obj)) {
           console.log(`${key}: ${value.toString()}`);
         }
         console.log("\n");
       }
-      //console.dir(sellOnDutchXLogs);
+      //console.dir(withdrawFromDXToUserLogs);
     }
   } catch (err) {
     console.log(err);
   }
 }
 
-fetchLogSellOnDutchX().catch(err => console.error(err));
+main().catch(err => console.error(err));

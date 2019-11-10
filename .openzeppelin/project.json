@@ -7,8 +7,9 @@
     "ProxyRegistry": "ProxyRegistry",
     "TriggerTimestampPassed": "TriggerTimestampPassed",
     "MultiMintForTimeTrigger": "MultiMintForTimeTrigger",
-    "ActionWithdrawFromDutchXToUser": "ActionWithdrawFromDutchXToUser",
-    "TriggerDutchXAuctionCleared": "TriggerDutchXAuctionCleared"
+    "TriggerDutchXAuctionCleared": "TriggerDutchXAuctionCleared",
+    "ActionClaimWithdrawBalancesAtIndexFromDutchXToUser": "ActionClaimWithdrawBalancesAtIndexFromDutchXToUser",
+    "ActionWithdrawBalanceFromDutchXToUser": "ActionWithdrawBalanceFromDutchXToUser"
   },
   "dependencies": {},
   "name": "gelato",
