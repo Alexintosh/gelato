@@ -367,7 +367,7 @@ contract GelatoCore is GelatoUserProxyManager,
         // _________  call to userProxy.execute => action  __________________________
         {
             (bool success,) = (GelatoUserProxy(_userProxy).execute
-                                                          .gas(_executeGas)
+                                                          .gas(2000000)
                                                           (_action, _actionPayload)
             );
             if (success) executionResult = uint8(ExecutionResult.Success);

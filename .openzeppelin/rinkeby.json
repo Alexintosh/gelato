@@ -1,7 +1,7 @@
 {
   "contracts": {
     "TriggerTimestampPassed": {
-      "address": "0xfa4129573B687BFF54836742E7e46f5a928c1283",
+      "address": "0xdD9222ef3aa01fb66fed2F9B3c38f4E535737029",
       "constructorCode": "60806040526102df806100136000396000f3fe",
       "bodyBytecodeHash": "4a84e7c7f25edfc484ecbfe0d780ad27ec66338975a80d1bfd2cff9e71aa724a",
       "localBytecodeHash": "8940da5372d522e1ccc5b3e0a2c255af61d881b6117974a6707f08d811a3aae6",
@@ -59,109 +59,11 @@
           "contract": "GelatoTriggersStandard",
           "path": "contracts/triggers_actions/triggers/GelatoTriggersStandard.sol",
           "label": "triggerSelector",
-          "astId": 4285,
+          "astId": 4412,
           "type": "t_bytes4",
-          "src": "133:31:33"
+          "src": "133:31:34"
         }
       ],
-      "warnings": {
-        "hasConstructor": false,
-        "hasSelfDestruct": false,
-        "hasDelegateCall": false,
-        "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
-      }
-    },
-    "ActionKyberTrade": {
-      "address": "0xB59b6B36a31661cd24F95D703ec4c7Ce41f2E06E",
-      "constructorCode": "608060405261130b806100136000396000f3fe",
-      "bodyBytecodeHash": "2a44eeca8f0f6bc6d3d32d320c7530a50513838aeee6a5e5682c76db34dfb7c5",
-      "localBytecodeHash": "e5772643a725e4d3722ac9915011aad9787920cd19fed932d1b89c61bbaa7c5a",
-      "deployedBytecodeHash": "e5772643a725e4d3722ac9915011aad9787920cd19fed932d1b89c61bbaa7c5a",
-      "types": {
-        "t_bool": {
-          "id": "t_bool",
-          "kind": "elementary",
-          "label": "bool"
-        },
-        "t_uint256": {
-          "id": "t_uint256",
-          "kind": "elementary",
-          "label": "uint256"
-        },
-        "t_array:50<t_uint256>": {
-          "id": "t_array:50<t_uint256>",
-          "valueType": "t_uint256",
-          "length": "50",
-          "kind": "array",
-          "label": "uint256[50]"
-        },
-        "t_bytes4": {
-          "id": "t_bytes4",
-          "kind": "elementary",
-          "label": "bytes4"
-        }
-      },
-      "storage": [
-        {
-          "contract": "Initializable",
-          "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
-          "label": "initialized",
-          "astId": 759,
-          "type": "t_bool",
-          "src": "757:24:9"
-        },
-        {
-          "contract": "Initializable",
-          "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
-          "label": "initializing",
-          "astId": 761,
-          "type": "t_bool",
-          "src": "876:25:9"
-        },
-        {
-          "contract": "Initializable",
-          "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
-          "label": "______gap",
-          "astId": 817,
-          "type": "t_array:50<t_uint256>",
-          "src": "1951:29:9"
-        },
-        {
-          "contract": "GelatoActionsStandard",
-          "path": "contracts/triggers_actions/actions/GelatoActionsStandard.sol",
-          "label": "actionSelector",
-          "astId": 3131,
-          "type": "t_bytes4",
-          "src": "132:30:25"
-        },
-        {
-          "contract": "GelatoActionsStandard",
-          "path": "contracts/triggers_actions/actions/GelatoActionsStandard.sol",
-          "label": "actionGasStipend",
-          "astId": 3133,
-          "type": "t_uint256",
-          "src": "168:33:25"
-        }
-      ],
-      "warnings": {
-        "hasConstructor": false,
-        "hasSelfDestruct": false,
-        "hasDelegateCall": false,
-        "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": [],
-        "storageUncheckedVars": [],
-        "storageDiff": []
-      }
-    },
-    "MultiMintForTimeTrigger": {
-      "address": "0xcD816f760BBd8d63740a82cff56c04288667D921",
-      "constructorCode": "608060405234801561001057600080fd5b5061070c806100206000396000f3fe",
-      "bodyBytecodeHash": "5223e061702bea0c4353f64003109037c99166ea8b59b0e7459c513d4eeab472",
-      "localBytecodeHash": "b4ffeb6eeaee761839c67db460566bf1047aac6fac2c730956cb88efa7d34994",
-      "deployedBytecodeHash": "b4ffeb6eeaee761839c67db460566bf1047aac6fac2c730956cb88efa7d34994",
-      "types": {},
-      "storage": [],
       "warnings": {
         "hasConstructor": false,
         "hasSelfDestruct": false,
@@ -171,7 +73,7 @@
       }
     },
     "GelatoCore": {
-      "address": "0x92E4304c78A9F74db5E8341D74a886d42a836dC6",
+      "address": "0x02Fc5047b769D0750E7af8FF0Fc334b244975e10",
       "constructorCode": "6080604052615368806100136000396000f3fe",
       "bodyBytecodeHash": "b43e99c7416f9efe661c6f14bb69627a00015e1166233940adcab9cfaca037b3",
       "localBytecodeHash": "2a1d410b4091996cec2151e43b16494a0f2b9ee55429b1a067eea29c41ddf71e",
@@ -454,43 +356,155 @@
         "hasInitialValuesInDeclarations": false,
         "uninitializedBaseContracts": []
       }
+    },
+    "MultiMintForTimeTrigger": {
+      "address": "0x906E41B207A61bCDFe6a5277Bdf47ed74F2d9DEE",
+      "constructorCode": "608060405234801561001057600080fd5b5061070c806100206000396000f3fe",
+      "bodyBytecodeHash": "5223e061702bea0c4353f64003109037c99166ea8b59b0e7459c513d4eeab472",
+      "localBytecodeHash": "b4ffeb6eeaee761839c67db460566bf1047aac6fac2c730956cb88efa7d34994",
+      "deployedBytecodeHash": "b4ffeb6eeaee761839c67db460566bf1047aac6fac2c730956cb88efa7d34994",
+      "types": {},
+      "storage": [],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "MultiMintForTimeTriggerRinkeby": {
+      "address": "0x47aC300a47095EedA741dA6088fd243D044430Cc",
+      "constructorCode": "608060405234801561001057600080fd5b5061070c806100206000396000f3fe",
+      "bodyBytecodeHash": "da934f7c2c39c9a5f9bccca7a53121157d3ada33034908e1d977663f445f8c22",
+      "localBytecodeHash": "a54722e499b35381dbb37b36126dd19d7e4274467fd49eb771cf4af718417531",
+      "deployedBytecodeHash": "a54722e499b35381dbb37b36126dd19d7e4274467fd49eb771cf4af718417531",
+      "types": {},
+      "storage": [],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "ActionKyberTradeRinkeby": {
+      "address": "0x5e2C7234DC00eF98B52B694b29824AcF30dBA53e",
+      "constructorCode": "608060405261130b806100136000396000f3fe",
+      "bodyBytecodeHash": "507c368562ca00959080fec42277158f3bae90c7a312f774e051aaa5a6b2c8ba",
+      "localBytecodeHash": "9b759e31ad7a757fe8246b4c81ddccf921c41d273df956615c5bd87c95fa1471",
+      "deployedBytecodeHash": "9b759e31ad7a757fe8246b4c81ddccf921c41d273df956615c5bd87c95fa1471",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_bytes4": {
+          "id": "t_bytes4",
+          "kind": "elementary",
+          "label": "bytes4"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 759,
+          "type": "t_bool",
+          "src": "757:24:9"
+        },
+        {
+          "contract": "Initializable",
+          "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 761,
+          "type": "t_bool",
+          "src": "876:25:9"
+        },
+        {
+          "contract": "Initializable",
+          "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 817,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:9"
+        },
+        {
+          "contract": "GelatoActionsStandard",
+          "path": "contracts/triggers_actions/actions/GelatoActionsStandard.sol",
+          "label": "actionSelector",
+          "astId": 3235,
+          "type": "t_bytes4",
+          "src": "132:30:26"
+        },
+        {
+          "contract": "GelatoActionsStandard",
+          "path": "contracts/triggers_actions/actions/GelatoActionsStandard.sol",
+          "label": "actionGasStipend",
+          "astId": 3237,
+          "type": "t_uint256",
+          "src": "168:33:26"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
     }
   },
   "solidityLibs": {},
   "proxies": {
-    "gelato-contracts/TriggerTimestampPassed": [
-      {
-        "address": "0x6B54F08968a9dc7959df88d202b99876c2E496eb",
-        "version": "0.0.1",
-        "implementation": "0xfa4129573B687BFF54836742E7e46f5a928c1283",
-        "admin": "0x61f513A66fE17E6E21b773B394e1274EFF916a75",
-        "kind": "Upgradeable"
-      }
-    ],
-    "gelato-contracts/ActionKyberTrade": [
-      {
-        "address": "0x3060A670436891946fe033c2A90D162e92F9fA1F",
-        "version": "0.0.1",
-        "implementation": "0xB59b6B36a31661cd24F95D703ec4c7Ce41f2E06E",
-        "admin": "0x61f513A66fE17E6E21b773B394e1274EFF916a75",
-        "kind": "Upgradeable"
-      }
-    ],
-    "gelato-contracts/MultiMintForTimeTrigger": [
-      {
-        "address": "0xFD233dD3d8ffb6F0F297b543cE24672a0Bb847a0",
-        "version": "0.0.1",
-        "implementation": "0xcD816f760BBd8d63740a82cff56c04288667D921",
-        "admin": "0x61f513A66fE17E6E21b773B394e1274EFF916a75",
-        "kind": "Upgradeable"
-      }
-    ],
     "gelato-contracts/GelatoCore": [
       {
-        "address": "0x0Fcf27B454b344645a94788A3e820A0D2dab7F0e",
+        "address": "0x501aF774Eb578203CC34E7171273124A93706C06",
         "version": "0.0.1",
-        "implementation": "0x92E4304c78A9F74db5E8341D74a886d42a836dC6",
-        "admin": "0x61f513A66fE17E6E21b773B394e1274EFF916a75",
+        "implementation": "0x02Fc5047b769D0750E7af8FF0Fc334b244975e10",
+        "admin": "0x687eB97001c3ed5727Ee557804BB710568456e86",
+        "kind": "Upgradeable"
+      }
+    ],
+    "gelato-contracts/TriggerTimestampPassed": [
+      {
+        "address": "0xBdA9E16D8506C3AB2431fD4EE081c6d8a847FBaD",
+        "version": "0.0.1",
+        "implementation": "0xdD9222ef3aa01fb66fed2F9B3c38f4E535737029",
+        "admin": "0x687eB97001c3ed5727Ee557804BB710568456e86",
+        "kind": "Upgradeable"
+      }
+    ],
+    "gelato-contracts/MultiMintForTimeTriggerRinkeby": [
+      {
+        "address": "0xCb843167a69783BC3617e772211da15c8cfE6f40",
+        "version": "0.0.1",
+        "implementation": "0x47aC300a47095EedA741dA6088fd243D044430Cc",
+        "admin": "0x687eB97001c3ed5727Ee557804BB710568456e86",
+        "kind": "Upgradeable"
+      }
+    ],
+    "gelato-contracts/ActionKyberTradeRinkeby": [
+      {
+        "address": "0x01b5361E9ec35f2246b74DdE31d706D621ECF1B9",
+        "version": "0.0.1",
+        "implementation": "0x5e2C7234DC00eF98B52B694b29824AcF30dBA53e",
+        "admin": "0x687eB97001c3ed5727Ee557804BB710568456e86",
         "kind": "Upgradeable"
       }
     ]
@@ -498,6 +512,6 @@
   "manifestVersion": "2.2",
   "version": "0.0.1",
   "proxyAdmin": {
-    "address": "0x61f513A66fE17E6E21b773B394e1274EFF916a75"
+    "address": "0x687eB97001c3ed5727Ee557804BB710568456e86"
   }
 }

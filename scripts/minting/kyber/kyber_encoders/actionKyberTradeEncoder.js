@@ -17,33 +17,33 @@ exports.getEncodedActionKyberTradeParams = (
 };
 
 exports.getActionKyberTradePayloadWithSelector = (
-  // action params with selector
+  // action params
+  _user,
   _src,
   _srcAmt,
   _dest,
-  _user,
   _minConversionRate
 ) => {
-  const actionDutchXSellABI = [
+  const actionKyberTradeABI = [
     {
       name: "action",
       type: "function",
       inputs: [
+        { type: "address", name: "_user" },
         { type: "address", name: "_src" },
         { type: "uint256", name: "_srcAmt" },
         { type: "address", name: "_dest" },
-        { type: "address", name: "_user" },
         { type: "uint256", name: "_minConversionRate" }
       ]
     }
   ];
-  const interface = new ethers.utils.Interface(actionDutchXSellABI);
+  const interface = new ethers.utils.Interface(actionKyberTradeABI);
 
   const actionPayloadWithSelector = interface.functions.action.encode([
+    _user,
     _src,
     _srcAmt,
     _dest,
-    _user,
     _minConversionRate
   ]);
 
