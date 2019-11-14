@@ -1,24 +1,23 @@
 {
   "manifestVersion": "2.2",
   "contracts": {
-    "ActionDutchXSell": "ActionDutchXSell",
     "GelatoCore": "GelatoCore",
-    "ProxyFactory": "ProxyFactory",
-    "ProxyRegistry": "ProxyRegistry",
     "TriggerTimestampPassed": "TriggerTimestampPassed",
-    "MultiMintForTimeTrigger": "MultiMintForTimeTrigger",
-    "TriggerDutchXAuctionCleared": "TriggerDutchXAuctionCleared",
-    "ActionClaimWithdrawBalancesAtIndexFromDutchXToUser": "ActionClaimWithdrawBalancesAtIndexFromDutchXToUser",
-    "ActionWithdrawBalanceFromDutchXToUser": "ActionWithdrawBalanceFromDutchXToUser"
+    "ActionKyberTrade": "ActionKyberTrade",
+    "MultiMintForTimeTrigger": "MultiMintForTimeTrigger"
   },
   "dependencies": {},
-  "name": "gelato",
-  "version": "0.0.0",
+  "name": "gelato-contracts",
+  "version": "0.0.1",
+  "telemetryOptIn": true,
   "compiler": {
     "manager": "openzeppelin",
     "solcVersion": "0.5.12",
     "compilerSettings": {
-      "optimizer": {}
+      "optimizer": {
+        "enabled": false,
+        "runs": "200"
+      }
     }
   }
 }
